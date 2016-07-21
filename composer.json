@@ -1,0 +1,12 @@
+{
+    "name": "andrewlechowicz/upstatephp-101",
+    "authors": [
+        {
+            "name": "Andrew Lechowicz",
+            "email": "andrew@alecho.com"
+        }
+    ],
+    "require": {
+      "php": "^7.0.0"
+    }
+}

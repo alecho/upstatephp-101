@@ -6,14 +6,12 @@ class Deck
 
     public $suits = ['S', 'H', 'C', 'D'];
     public $indices = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
-    public $deck = [];
+    protected $deck = [];
 
-    /**
-    public function __construct()
+    public function __construct($suit)
     {
       $this->create();
     }
-     */
 
     /**
      * Returns and array of arrays representing cards
@@ -42,6 +40,10 @@ class Deck
     /**
      * Iterate through a deck and print each card.
      * Returns void.
+     * NOTE: This function name won't work on < PHP 7
+     * This is because `print` is a reserved word. In
+     * PHP 7 it seems that PHP is smart enough to realize
+     * that it's a function name and not a keyword.
      */
     public function print()
     {
@@ -50,6 +52,67 @@ class Deck
         $this->printCard($card);
       }
       echo '</pre>';
+
+      return $this;
+    }
+
+    /**
+     * Shuffles a deck regardless of the deck's current
+     * state and reutns the shuffled deck;
+     */
+    public function shuffle()
+    {
+      shuffle($this->deck);
+
+      return $this;
+    }
+
+    /**
+     * Return the number of cards the deck
+     */
+    public function size()
+    {
+      return count($this->deck);
+    }
+
+    /**
+     * Return the last card from the deck, shortening
+     * the deck by one card. With a face down deck this
+     * is equivalant to dealing a single card.
+     */
+    public function pop()
+    {
+      return array_pop($this->deck);
+    }
+
+    /**
+     * Add a card to the end of a deck. With a face down
+     * deck this is equivalant to putting a card back on
+     * top of the deck.
+     */
+    public function push($card)
+    {
+      return array_push($this->deck, $card);
+    }
+
+    /**
+     * Remove and return the first card in the deck. With
+     * a face down deck this is equivalant to dealing the
+     * bottom card.
+     */
+    public function shift()
+    {
+      return array_shift($this->deck);
+    }
+
+    /**
+     * Prepends a card to the beginning of the deck. With
+     * a face down deck this is equivalant putting the card
+     * on the bottom of the deck.
+     */
+    public function unshift($card)
+    {
+      return array_unshift($this->deck, $card);
     }
 
     /**
@@ -75,52 +138,33 @@ class Deck
 
 }
 
-$deck1 = new Deck();
-$deck1 = $deck1->create();
-$deck2 = new Deck();
-$deck3 = new Deck();
-$deck1->print();
-exit;
-
 /**
- * Suffles a deck regardless of the deck's current
- * state and reutns the shuffled deck;
- */
-function shuffleDeck($deck = [])
-{
-  shuffle($deck);
-  return $deck;
-}
-
-/**
- * Returns an array with 'card' and 'deck'.
- */
-function getTopCardFromDeck($deck)
-{
-  $card = array_pop($deck);
-  return ['card' => $card, 'deck' => $deck];
-}
-
-
-/**
- * Returns an array with $hands number of arrays
- * with no more than $limit cards per hand under
- * 'hands' key and the remaining cards in the deck
- * in the 'deck' key.
+ * Returns an array with $hands number of new Deck
+ * class objects with no more than $limit cards per
+ * hand.
  */
 function deal($deck, $hands = 2, $limit = null)
 {
+  // We don't need 'hands' and 'deck' keys here but we
+  // should return an array. Try renaming $out to $hands
+  // in this method.
   $out = ['hands' => [], 'deck' => null];
   if ($limit == null) {
     $limit = count($deck);
   }
 
   for($i=0; $i<$limit; $i++) {
+    // This looks a lot like out new `pop()` method
     $topAndDeck = getTopCardFromDeck($deck);
+    // We won't need to keep track of the deck here
     $deck = $topAndDeck['deck'];
+    // Hmm... Hands seems a lot like decks. We should be
+    // able to return an array of decks
     $out['hands'][($i % $hands)][] = $topAndDeck['card'];
   }
 
+  // We don't need to return the deck. Our `$deck` property
+  // keeps track of it for us.
   $out['deck'] = $deck;
 
   return $out;
@@ -142,18 +186,35 @@ function deal($deck, $hands = 2, $limit = null)
   <body>
     <div class="container">
       <h1><?= $gameName ?></h1>
+      <h3>New Deck:</h3>
       <?php
-      $deck = createDeck();
-      printDeck($deck);
-      $deck = shuffleDeck($deck);
-      printDeck($deck);
-
-      $result = deal($deck, 2);
-      $hands = $result['hands'];
-      foreach($hands as $num => $hand) {
-        echo '<h2>Hand ' . $num. '</h2>';
-        printDeck($hand);
-      }
+        $deck = new Deck();
+        $deck->print();
+      ?>
+      <h3>Pop:</h3>
+      <?php
+        $card = $deck->pop();
+        $deck->print();
+      ?>
+      <h3>Push (our poped card):</h3>
+      <?php
+        $deck->push($card);
+        $deck->print();
+      ?>
+      <h3>Shift:</h3>
+      <?php
+        $card = $deck->shift();
+        $deck->print();
+      ?>
+      <h3>Unshift (our shifted card):</h3>
+      <?php
+        $deck->unshift($card);
+        $deck->print();
+      ?>
+      <h3>Shuffle</h3>
+      <?php
+        $deck->shuffle();
+        $deck->print();
       ?>
     </div>
 
