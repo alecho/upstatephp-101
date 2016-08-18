@@ -45,7 +45,7 @@ class Deck
      * PHP 7 it seems that PHP is smart enough to realize
      * that it's a function name and not a keyword.
      */
-    public function print()
+    public function printPreformatted()
     {
       echo '<pre>';
       foreach($this->deck as $card) {
@@ -189,32 +189,32 @@ function deal($deck, $hands = 2, $limit = null)
       <h3>New Deck:</h3>
       <?php
         $deck = new Deck();
-        $deck->print();
+        $deck->printPreformatted();
       ?>
       <h3>Pop:</h3>
       <?php
         $card = $deck->pop();
-        $deck->print();
+        $deck->printPreformatted();
       ?>
       <h3>Push (our poped card):</h3>
       <?php
         $deck->push($card);
-        $deck->print();
+        $deck->printPreformatted();
       ?>
       <h3>Shift:</h3>
       <?php
         $card = $deck->shift();
-        $deck->print();
+        $deck->printPreformatted();
       ?>
       <h3>Unshift (our shifted card):</h3>
       <?php
         $deck->unshift($card);
-        $deck->print();
+        $deck->printPreformatted();
       ?>
       <h3>Shuffle</h3>
       <?php
         $deck->shuffle();
-        $deck->print();
+        $deck->printPreformatted();
       ?>
     </div>
 
