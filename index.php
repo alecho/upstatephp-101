@@ -4,11 +4,11 @@ $gameName = 'War';
 class Deck
 {
 
-    public $suits = ['S', 'H', 'C', 'D'];
-    public $indices = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+    private $suits = ['S', 'H', 'C', 'D'];
+    private $indices = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
     protected $deck = [];
 
-    public function __construct($suit)
+    public function __construct()
     {
       $this->create();
     }
@@ -19,6 +19,7 @@ class Deck
      */
     public function create()
     {
+      $this->deck = [];
       foreach($this->suits as $suit) {
         foreach($this->indices as $index) {
           $this->deck[] = $this->createCard($suit, $index);
@@ -32,7 +33,7 @@ class Deck
      * Return an array with indices for _properties_
      * of a playing card.
      */
-    public function createCard($suit, $index)
+    private function createCard($suit, $index)
     {
       return ['suit' => $suit, 'index' => $index];
     }
@@ -136,6 +137,44 @@ class Deck
       echo $card['index'] . $suit . "\n";
     }
 
+    public function cardSort()
+    {
+      if ($this->deck->size() == 52) {
+        return $this->create();
+      }
+    }
+
+    public function deal($cardsPerHand = 1, $hands = [])
+    {
+      for ($i=0; $i < $cardsPerHand; $i++) {
+        foreach ($hands as $hand) {
+          $hand->push($this->pop());
+        }
+      }
+    }
+}
+
+class Hand extends Deck
+{
+    public function __construct()
+    {
+      $this->create();
+    }
+
+    /**
+     * Returns and array of arrays representing cards
+     * in a specific order.
+     */
+    public function create()
+    {
+      return $this;
+    }
+
+    public function cardSort()
+    {
+      return array_multisort($this->deck);
+    }
+
 }
 
 /**
@@ -188,7 +227,10 @@ function deal($deck, $hands = 2, $limit = null)
       <h1><?= $gameName ?></h1>
       <h3>New Deck:</h3>
       <?php
-        $deck = new Deck();
+        $realDeck = (new Deck())->shuffle();
+        $hand = new Hand();
+        $realDeck->deal(7, [$hand]);
+        $deck = $hand;
         $deck->printPreformatted();
       ?>
       <h3>Pop:</h3>
@@ -214,6 +256,11 @@ function deal($deck, $hands = 2, $limit = null)
       <h3>Shuffle</h3>
       <?php
         $deck->shuffle();
+        $deck->printPreformatted();
+      ?>
+        <h3>Sort</h3>
+      <?php
+        $deck->cardSort();
         $deck->printPreformatted();
       ?>
     </div>
