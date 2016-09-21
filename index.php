@@ -4,11 +4,19 @@ include 'hand.php';
 include 'card.php';
 
 $gameName = 'War';
+$post = $_SERVER['REQUEST_METHOD'] == 'POST';
 
-$realDeck = (new Deck())->shuffle();
-$hand = new Hand();
-$realDeck->deal(7, [$hand]);
-$deck = $hand;
+if ($post) {
+
+  $deck = (new Deck())->shuffle();
+  $hands = [];
+  for($i=0; $i < $_POST['number_of_players']; $i++) {
+    $hands[] = new Hand();
+  }
+  $deck->deal(7, $hands);
+  #$deck = $hand;
+
+}
 
 ?>
 <!DOCTYPE html>
@@ -27,10 +35,21 @@ $deck = $hand;
     <div class="container">
       <h1><?= $gameName ?></h1>
       <form action="index.php" method="POST" name="game-setup">
-        <input name="number_of_players" type="text">
+        <label for="number_of_players">Number of Players</label>
+        <input
+          id="number_of_players"
+          name="number_of_players"
+          type="email"
+        >
         <button type="submit">Submit</button>
       </form>
+
+      <?php foreach ($hands as $num => $hand) {
+        echo 'Hand #' . ($num + 1);
+        $hand->printPreformatted();
+      } ?>
     </div>
+
 
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

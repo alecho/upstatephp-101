@@ -37,8 +37,8 @@ class Card
     $valueMap = [
       1  => 'A',
       11 => 'J',
-      12 => 'K',
-      13 => 'Q',
+      12 => 'Q',
+      13 => 'K',
     ];
 
     if (array_key_exists($this->value, $valueMap)) {
